@@ -14,7 +14,8 @@ class Registro extends Component {
     }
 
     render() {
-        const { onSubmit, loader } = this.props;
+        const { onSubmit, loader, listOrganization, stateModal, 
+                closeModal, openModal, registrarOrganizacion } = this.props;
         if (localStorage.getItem('token')) {
             return (<Redirect to="/" />);
         }
@@ -29,7 +30,14 @@ class Registro extends Component {
                     <div className="card card-login col-lg-3 col-md-4 col-11">
                         <h5 className="text-center pv">REGISTRO</h5>
                         <LoadMask loading={loader} light>
-                            <RegisterForm onSubmit={onSubmit} />
+                            <RegisterForm 
+                                onSubmit={onSubmit} 
+                                listOrganization={ listOrganization }
+                                closeModal={closeModal}
+                                openModal={ openModal }
+                                stateModal={ stateModal }
+                                registrarOrganizacion={ registrarOrganizacion }
+                            />
                             <span>¿Ya tienes cuenta?&nbsp;<Link to="/login">Ingresa aquí</Link></span>
                         </LoadMask>
                     </div>

@@ -1,17 +1,16 @@
 import React from 'react';
-import Select, { Creatable, Async } from 'react-select';
+import Select, { Creatable, Async, AsyncCreatableSelect } from 'react-select';
 import NumberFormat from 'react-number-format';
 import classNames from 'classnames';
 import Switch from 'react-switch';
-import DayPicker from '../DayPicker';
-import FileUploader from '../FileUploader/FileUploader';
 import DatePicker from "react-date-picker";
 import _ from "lodash";
-
+import DayPicker from '../DayPicker';
+import FileUploader from '../FileUploader/FileUploader';
 
 export const renderField = ({
-                                input, placeholder, type, meta: { touched, error },
-                            }) => {
+    input, placeholder, type, meta: { touched, error }, disabled, className = 'form-control',
+}) => {
     const invalid = touched && error;
     return (
         <div>
@@ -19,7 +18,8 @@ export const renderField = ({
                 {...input}
                 placeholder={placeholder}
                 type={type}
-                className={classNames('form-control', { 'is-invalid': invalid })}
+                className={classNames(className, { 'is-invalid': invalid })}
+                disabled={disabled || false}
             />
             {invalid && (
                 <div className="invalid-feedback">
@@ -31,46 +31,18 @@ export const renderField = ({
 };
 
 export const renderTextArea = ({
-                                   input, placeholder, rows, meta: { touched, error },
-                               }) => {
+    input, placeholder, disabled,rows, meta: { touched, error },
+}) => {
     const invalid = touched && error;
     return (
         <div>
-      <textarea
-          {...input}
-          placeholder={placeholder}
-          style={{ resize: 'none' }}
-          rows={rows || 3}
-          className={classNames('form-control', { 'is-invalid': invalid })}
-      />
-            {invalid && (
-                <div className="invalid-feedback">
-                    {error}
-                </div>
-            )}
-        </div>
-    );
-};
-
-export const renderNumber = ({
-                                 input, decimalScale, placeholder, meta: { touched, error }, prefix="", suffix="", numberFormat,
-                             }) => {
-    const invalid = touched && error;
-    return (
-        <div>
-            <NumberFormat
+            <textarea
+                {...input}
                 placeholder={placeholder}
+                style={{ resize: 'none' }}
+                rows={rows || 3}
                 className={classNames('form-control', { 'is-invalid': invalid })}
-                decimalScale={decimalScale || 0}
-                format={numberFormat}
-                fixedDecimalScale
-                value={input.value}
-                thousandSeparator
-                prefix={prefix}
-                suffix={suffix}
-                onValueChange={(values) => {
-                    input.onChange(values.value);
-                }}
+                disabled={disabled || false}
             />
             {invalid && (
                 <div className="invalid-feedback">
@@ -81,14 +53,72 @@ export const renderNumber = ({
     );
 };
 
-export const renderCurrency = ({
-                                   input, meta: { touched, error }, prefix="Q ", placeholder,
-                               }) => {
+export const renderNumber = ({
+    input, decimalScale, placeholder, meta: { touched, error }, prefix = "", suffix = "", numberFormat, disabled,
+    className = 'form-control',
+}) => {
     const invalid = touched && error;
     return (
         <div>
             <NumberFormat
-                className={classNames('form-control', { 'is-invalid': invalid })}
+                placeholder={placeholder}
+                className={classNames(className, { 'is-invalid': invalid })}
+                decimalScale={decimalScale || 0}
+                format={numberFormat}
+                fixedDecimalScale
+                value={input.value}
+                thousandSeparator
+                prefix={prefix}
+                suffix={suffix}
+                onValueChange={(values) => {
+                    input.onChange(values.value);
+                }}
+                disabled={disabled || false}
+            />
+            {invalid && (
+                <div className="invalid-feedback">
+                    {error}
+                </div>
+            )}
+        </div>
+    );
+};
+export const renderNum = ({
+    input, decimalScale, placeholder, meta: { touched, error }, prefix = "", suffix = "", numberFormat, disabled,
+    className = 'form-control', onValueChange,
+}) => {
+    const invalid = touched && error;
+    return (
+        <div>
+            <NumberFormat
+                placeholder={placeholder}
+                className={classNames(className, { 'is-invalid': invalid })}
+                decimalScale={decimalScale || 0}
+                format={numberFormat}
+                fixedDecimalScale
+                value={input.value}
+                thousandSeparator
+                prefix={prefix}
+                suffix={suffix}
+                onValueChange={onValueChange}
+                disabled={disabled || false}
+            />
+            {invalid && (
+                <div className="invalid-feedback">
+                    {error}
+                </div>
+            )}
+        </div>
+    );
+};
+export const renderCurrency = ({
+    input, meta: { touched, error }, prefix = "Q ", placeholder, disabled, className = 'form-control',
+}) => {
+    const invalid = touched && error;
+    return (
+        <div>
+            <NumberFormat
+                className={classNames(className, { 'is-invalid': invalid })}
                 decimalScale={2}
                 fixedDecimalScale
                 placeholder={placeholder}
@@ -98,6 +128,8 @@ export const renderCurrency = ({
                 onValueChange={(values) => {
                     input.onChange(values.value);
                 }}
+                disabled={disabled || false}
+
             />
             {invalid && (
                 <div className="invalid-feedback">
@@ -109,8 +141,8 @@ export const renderCurrency = ({
 };
 
 export const renderSwitch = ({
-                                 input, meta: { touched, error }, label, disabled,
-                             }) => {
+    input, meta: { touched, error }, label, disabled, className = '',
+}) => {
     const invalid = touched && error;
     return (
         <div className="d-flex align-items-center">
@@ -119,13 +151,15 @@ export const renderSwitch = ({
                 height={18}
                 width={36}
                 disabled={disabled}
+                className={classNames(className)}
                 onChange={(value) => {
                     input.onChange(value);
                 }}
                 checked={input.value ? input.value : false}
                 // id="normal-switch"
             />
-            &nbsp;{label}
+            &nbsp;
+            {label}
             {invalid && (
                 <div className="invalid-feedback">
                     {error}
@@ -135,7 +169,7 @@ export const renderSwitch = ({
     );
 };
 
-export const renderFieldCheck = ({ input, label, value, disabled, type, meta: { touched, error } }) => {
+export const renderFieldCheck = ({ input, label, value, disabled, type, meta: { touched, error }, className = '' }) => {
     const invalid = touched && error;
     return (
         <React.Fragment>
@@ -145,10 +179,12 @@ export const renderFieldCheck = ({ input, label, value, disabled, type, meta: { 
                         type="checkbox"
                         disabled={disabled}
                         {...input}
-                        className={classNames('', { 'is-invalid': invalid })}
+                        className={classNames(className, { 'is-invalid': invalid })}
+                        value={input.value}
                     />
                     <span className="fa fa-check" />
-                    &nbsp;{label}
+                    &nbsp;
+                    {label}
                 </label>
             </div>
             {invalid && (
@@ -157,7 +193,7 @@ export const renderFieldCheck = ({ input, label, value, disabled, type, meta: { 
                 </div>
             )}
         </React.Fragment>
-    )
+    );
 };
 
 export const renderFieldRadio = ({ input, label, value, disabled, meta: { touched, error } }) => {
@@ -171,9 +207,11 @@ export const renderFieldRadio = ({ input, label, value, disabled, meta: { touche
                         disabled={disabled}
                         {...input}
                         className={classNames('', { 'is-invalid': invalid })}
+                        value={input.value}
                     />
                     <span />
-                    &nbsp;{label}
+                    &nbsp;
+                    {label}
                 </label>
             </div>
             {invalid && (
@@ -182,7 +220,7 @@ export const renderFieldRadio = ({ input, label, value, disabled, meta: { touche
                 </div>
             )}
         </React.Fragment>
-    )
+    );
 };
 
 export const SelectField = (
@@ -194,19 +232,19 @@ export const SelectField = (
         isSearchable,
         options,
         placeholder,
-        labelKey="label",
-        valueKey="value",
-        meta: { touched, error }
-    }) => {
-
+        labelKey = "label",
+        valueKey = "value",
+        meta: { touched, error },
+    }
+) => {
     const invalid = touched && error;
     const _options = [];
-    options.forEach(option => {
+    options.forEach((option) => {
         _options.push({...option, label: option[labelKey], value: option[valueKey]});
     });
-    let value = input.value;
+    let {value} = input;
     if (value !== null && value !== undefined) {
-        value = _.find(_options, {value});
+        value = _.find(_options, value);
     }
 
     return (
@@ -219,7 +257,7 @@ export const SelectField = (
                 isSearchable={isSearchable}
                 options={_options}
                 placeholder={placeholder}
-                onChange={(e) => { input.onChange(e ? e[valueKey] : null); }}
+                onChange={(e) => { input.onChange(e || null); }}
                 value={value}
                 isDisabled={disabled}
             />
@@ -229,7 +267,7 @@ export const SelectField = (
                 </div>
             )}
         </React.Fragment>
-    )
+    );
 };
 
 
@@ -241,9 +279,10 @@ export const AsyncSelectField = (
         isSearchable,
         loadOptions,
         placeholder,
-        meta: { touched, error }
-    }) => {
-
+        meta: { touched, error },
+        className,
+    }
+) => {
     const invalid = touched && error;
 
     return (
@@ -251,13 +290,13 @@ export const AsyncSelectField = (
             <Async
                 isClearable={isClearable}
                 cacheOptions
-                className={classNames('react-select-container', { 'is-invalid': invalid })}
+                className={classNames(className || 'react-select-container', { 'is-invalid': invalid })}
                 backspaceRemovesValue={false}
                 isSearchable={isSearchable}
                 defaultOptions
                 loadOptions={loadOptions}
                 placeholder={placeholder}
-                onChange={(e) => { input.onChange(e ? e : null); }}
+                onChange={(e) => { input.onChange(e || null); }}
                 value={input.value}
                 isDisabled={disabled}
             />
@@ -267,7 +306,7 @@ export const AsyncSelectField = (
                 </div>
             )}
         </React.Fragment>
-    )
+    );
 };
 
 export const CreatableSelectField = (
@@ -278,14 +317,14 @@ export const CreatableSelectField = (
         isSearchable,
         options,
         placeholder,
-        labelKey="label",
-        valueKey="value",
-        meta: { touched, error }
-    }) => {
-
+        labelKey = "label",
+        valueKey = "value",
+        meta: { touched, error },
+    }
+) => {
     const invalid = touched && error;
     const _options = [];
-    options.forEach(option => {
+    options.forEach((option) => {
         _options.push({...option, label: option[labelKey], value: option[valueKey]});
     });
 
@@ -298,7 +337,7 @@ export const CreatableSelectField = (
                 isSearchable={isSearchable}
                 options={_options}
                 placeholder={placeholder}
-                onChange={(e) => { input.onChange(e ? e : null); }}
+                onChange={(e) => { input.onChange(e || null); }}
                 value={input.value}
                 isDisabled={disabled}
             />
@@ -308,9 +347,46 @@ export const CreatableSelectField = (
                 </div>
             )}
         </React.Fragment>
-    )
+    );
 };
 
+
+export const AsyncCreatableSelectField = (
+    {
+        input,
+        disabled,
+        isClearable,
+        isSearchable,
+        loadOptions,
+        placeholder,
+        meta: { touched, error },
+    }
+) => {
+    const invalid = touched && error;
+
+    return (
+        <React.Fragment>
+            <AsyncCreatableSelect
+                isClearable={isClearable}
+                cacheOptions
+                className={classNames('react-select-container', { 'is-invalid': invalid })}
+                backspaceRemovesValue={false}
+                isSearchable={isSearchable}
+                defaultOptions
+                loadOptions={loadOptions}
+                placeholder={placeholder}
+                onChange={(e) => { input.onChange(e || null); }}
+                value={input.value}
+                isDisabled={disabled}
+            />
+            {invalid && (
+                <div className="invalid-feedback">
+                    {error}
+                </div>
+            )}
+        </React.Fragment>
+    );
+};
 
 /**
  * @param photo: este parametro se usa para tener la imagen previa de una imagen en dado caso el formulario es
@@ -328,23 +404,26 @@ export const renderFilePicker = ({photo, setFile, className, disabled, input, me
         <div className={classNames(`${className}`, { 'is-invalid': invalid })}>
             <FileUploader
                 disabled={disabled}
-                img= {!!photo ? photo : null}
+                img={photo || null}
                 onFileChange={(e, file) => {
                     file = file || e.target.files[0];
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         input.onChange(reader.result);
-                        if (!!setFile) {
+                        if (setFile) {
                             setFile(file);
                         }
                     };
                     reader.readAsDataURL(file);
-                }} />
-            {invalid && <div className="invalid-feedback">
-                {error}
-            </div>}
+                }}
+            />
+            {invalid && (
+                <div className="invalid-feedback">
+                    {error}
+                </div>
+            )}
         </div>
-    )
+    );
 };
 
 export const renderDayPicker = ({className, disabled, maxDate, minDate, input, meta: { touched, error } }) => {
@@ -358,11 +437,13 @@ export const renderDayPicker = ({className, disabled, maxDate, minDate, input, m
                 onChange={e => input.onChange(e)}
                 value={input.value}
             />
-            {invalid && <div className="invalid-feedback">
-                {error}
-            </div>}
+            {invalid && (
+                <div className="invalid-feedback">
+                    {error}
+                </div>
+            )}
         </div>
-    )
+    );
 };
 
 export const renderDatePicker = ({className, disabled, maxDate, minDate, input, meta: { touched, error } }) => {
@@ -376,11 +457,13 @@ export const renderDatePicker = ({className, disabled, maxDate, minDate, input, 
                 minDate={minDate}
                 value={input.value}
             />
-            {invalid && <div className="invalid-feedback">
-                {error}
-            </div>}
+            {invalid && (
+                <div className="invalid-feedback">
+                    {error}
+                </div>
+            )}
         </div>
-    )
+    );
 };
 
 export const RenderField = {
@@ -391,4 +474,5 @@ export const RenderField = {
     renderSwitch,
     renderFieldCheck,
     renderFieldRadio,
+    renderNum,
 };

@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from api.models.user import User
 from api.models import Profile
 
 
@@ -20,12 +21,14 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'profile',
-            'password'
+            'password',
+            'organization'
         )
 
 
 class UserReadSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(required=False)
+    organization = serializers.SerializerMethodField('obj_organization')
 
     class Meta:
         model = User
@@ -37,4 +40,10 @@ class UserReadSerializer(serializers.ModelSerializer):
             'is_staff',
             'email',
             'profile',
+            'organization'
         )
+    
+    def obj_organization(self, obj):
+        if obj.organization:
+            return { 'id': obj.organization.id, 'name': obj.organization.name }
+        return {}

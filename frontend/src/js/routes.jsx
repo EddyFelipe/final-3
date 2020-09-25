@@ -22,15 +22,30 @@ import Notificaciones from './common/components/Examples/Notificaciones';
 import ExampleTabs from './common/components/Examples/Tabs/Tabs';
 require('../style/index.css');
 
+import { tareas } from './common/components/Tareas/TareasContainer'
+import Reportes from './common/components/reportes/ReportesContainer'
+import { trabajadas } from './common/components/TareasTrabajadas/TrabajadasContainer'
+
 module.exports = (
     <div>
         <div className="container__content">
             <Switch>
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/registro" component={Registro} />
-                <ProtectedRoute exact path="/" component={Demo} />
+                <ProtectedRoute exact path="/" component={ Reportes } />
                 <ProtectedRoute exact path="/page2" component={Examples} />
                 <ProtectedRoute exact path="/user-profile" component={Profile} />
+
+                {/* Tareas Route */}
+                <ProtectedRoute exact path="/tareas" component={tareas.listTareas} />
+                <ProtectedRoute exact path="/tareas/crear" component={tareas.tareasScreen } />
+                <ProtectedRoute exact path="/tareas/:id/ver" component={tareas.tareasScreen } />
+                <ProtectedRoute exact path="/tareas/:id/editar" component={tareas.tareasScreen } />
+
+                {/* Tareas Trabajadas Route */}
+                <ProtectedRoute exact path="/tatrabajada" component={ trabajadas.listTrabajadas } />
+                <ProtectedRoute exact path="/tatrabajada/crear" component={ trabajadas.trabajadasForm } />
+
                 <ProtectedRoute exact path="/grids" component={Grids} />
                 <ProtectedRoute exact path="/notifications" component={Notificaciones} />
                 <ProtectedRoute exact path="/tabs" component={ExampleTabs} />

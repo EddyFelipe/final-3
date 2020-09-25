@@ -7,6 +7,10 @@ from api import viewsets
 
 router = DefaultRouter()
 router.register(r'user', viewsets.UserViewset)
+router.register(r'organization', viewsets.OrganizationViewSet)
+router.register(r'task', viewsets.TaskViewSet)
+router.register(r'taskwork', viewsets.TaskWorkViewSet)
+router.register(r'report', viewsets.ReportViewSet)
 
 
 urlpatterns = [

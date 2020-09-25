@@ -2,9 +2,13 @@ import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { validate, validatorFromFunction, validators, combine } from 'validate-redux-form';
 import { renderField } from '../../Utils/renderField';
+import { AsyncSelectField } from '../../Utils/renderField/renderField'
+import OrganizacionModal from '../../organizacion/OrganizacionModal';
 
 const RegisterForm = (props) => {
-    const { handleSubmit, pristine, reset, submitting } = props;
+
+    const { handleSubmit, pristine, reset, submitting,  registrarOrganizacion,
+            listOrganization, closeModal, openModal, stateModal } = props;
     return (
         <form name="loginForm" className="form-validate mb-lg" onSubmit={handleSubmit}>
             <div className="form-group has-feedback">
@@ -19,6 +23,33 @@ const RegisterForm = (props) => {
                 <label htmlFor="username">Usuario</label>
                 <Field name="username" label="Usuario" component={renderField} type="text" className="form-control" />
             </div>
+
+            <div className="form-group has-feedback">
+                <label htmlFor="organization">Organización</label>
+                <Field 
+                    name="organization" 
+                    type="text" 
+                    component={AsyncSelectField} 
+                    loadOptions={ listOrganization }
+                    // disabled={false}
+                />
+                <div className="d-flex flex-row-reverse">
+                    <button
+                        className="btn btn-sm btn-light"
+                        type="button"
+                        onClick={ openModal }
+                    >
+                        + Organización
+                    </button>
+                    
+                    <OrganizacionModal 
+                        onSubmit={ registrarOrganizacion }
+                        closeModal={ closeModal }
+                        stateModal={ stateModal }
+                    />
+                </div>
+            </div>
+
             <div className="form-group has-feedback">
                 <label htmlFor="password">Contraseña</label>
                 <Field
@@ -42,6 +73,9 @@ const RegisterForm = (props) => {
             <div className="buttons-box">
                 <button type="submit" className="btn btn-primary m-1 align-self-center">Registrarse</button>
             </div>
+
+            
+
         </form>
     );
 };
@@ -61,6 +95,7 @@ export default reduxForm({
             username: validators.exists()('Este campo es requerido'),
             first_name: validators.exists()('Este campo es requerido'),
             last_name: validators.exists()('Este campo es requerido'),
+            organization: validators.exists()('Este campo es requerido'),
             password: validators.exists()('Este campo es requerido'),
         });
     },

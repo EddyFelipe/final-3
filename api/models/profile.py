@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 
 
 class Profile(models.Model):
@@ -12,7 +13,7 @@ class Profile(models.Model):
         (FEMALE, 'FEMALE')
     )
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    user = models.OneToOneField('User', on_delete=models.CASCADE, related_name="profile")
     avatar = models.ImageField(upload_to='Avatar', null=True, blank=True)
     phone = models.CharField(max_length=15, null=True, blank=True)
     address = models.CharField(max_length=250, null=True, blank=True)

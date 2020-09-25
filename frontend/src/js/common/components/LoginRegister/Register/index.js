@@ -5,7 +5,7 @@ import Register from './Register';
 
 const ms2p = (state) => {
   return {
-    ...state.registro,
+    ...state.register,
   };
 };
 

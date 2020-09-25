@@ -2,6 +2,7 @@ import { handleActions } from 'redux-actions';
 import { push } from "react-router-redux";
 import { initialize as initializeForm } from 'redux-form';
 import { NotificationManager } from "react-notifications";
+import { setOrganization } from '../tareas/tareas'
 import { api } from "api";
 
 const SUBMIT = 'LOGIN_SUBMIT';
@@ -36,6 +37,7 @@ export const onSubmit = (data = {}) => (dispatch, getStore) => {
         localStorage.setItem('token', response.token);
         dispatch(initializeForm('profile', response.user));
         dispatch(setMe(response.user));
+        dispatch(setOrganization( response.user.organization ))
         dispatch(push("/"));
     }).catch(() => {
         NotificationManager.error('Credenciales incorrectas, vuelva a intentar', 'ERROR', 0);
@@ -48,6 +50,7 @@ export const getMe = () => (dispatch) => {
     api.get('/user/me').then(me => {
         dispatch(initializeForm('profile', me));
         dispatch(setMe(me));
+        dispatch(setOrganization( me.organization ));
     })
         .catch(() => {
     }).finally(() => {});
